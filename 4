@@ -1,0 +1,28 @@
+# in_stock = {"coffee": 4, "milk": 4, "cream": 0}
+in_stock = {"coffee": 1, "milk": 2, "cream": 3}
+def order(*drinks):
+    length = len(drinks)
+    for i in range(length):
+        if ((in_stock.get("coffee") - drink_list.get(drinks[i]).get("coffee") >= 0) and (in_stock.get("milk") - drink_list.get(drinks[i]).get("milk") >= 0) and (in_stock.get("cream") - drink_list.get(drinks[i]).get("cream")) >= 0):
+            in_stock["coffee"] -= drink_list.get(drinks[i]).get("coffee")
+            in_stock["milk"] -= drink_list.get(drinks[i]).get("milk")
+            in_stock["cream"] -= drink_list.get(drinks[i]).get("cream")
+            return drinks[i]
+    return "К сожалению, не можем предложить Вам напиток"
+
+drink_espresso = {"coffee": 1, "milk": 0, "cream": 0}
+drink_capuchino = {"coffee": 1, "milk": 3, "cream": 0}
+drink_makiato = {"coffee": 2, "milk": 1, "cream": 0}
+drink_wien = {"coffee": 1, "milk": 0, "cream": 2}
+drink_latte = {"coffee": 1, "milk": 2, "cream": 1}
+drink_kon = {"coffee": 1, "milk": 0, "cream": 1}        
+drink_list = {"Эспрессо": drink_espresso, "Капучино": drink_capuchino, "Макиато": drink_makiato, "Кофе по-венски": drink_wien, "Латте Макиато":drink_latte, "Кон Панна":drink_kon}
+
+
+
+# print(order("Капучино", "Макиато", "Эспрессо"))
+# print(order("Капучино", "Макиато", "Эспрессо"))
+# print(order("Капучино", "Макиато", "Эспрессо"))
+
+print(order("Эспрессо", "Капучино", "Макиато", "Кофе по-венски", "Латте Макиато", "Кон Панна"))
+print(order("Эспрессо", "Капучино", "Макиато", "Кофе по-венски", "Латте Макиато", "Кон Панна"))
