@@ -1,0 +1,111 @@
+import numpy as np
+from matplotlib import pyplot as ppt
+
+x = np.linspace(start = 0, stop = 1, num = 20)
+m = np.zeros(5)
+K = np.zeros(3)
+y = x**2
+for i in range(5):
+    m[i] = np.mean(x**(i))
+for i in range(3):
+    K[i] = np.mean((x**(i))*y)
+matrix = [[0]*3 for i in range(3)]
+for i in range(3):
+    for j in range(3):
+        matrix[i][j] = m[i+j]
+
+#numpy
+c_np = np.linalg.solve(matrix, K)
+
+S = 0
+for i in range(20):
+    S += (c_np[0] + c_np[1]*x[i] + c_np[2]*(x[i]**2) - x[i]**2)
+eps_np = S/21
+eps_max_np = np.sqrt(eps_np)
+print("numpy eps_max = ", eps_max_np)
+
+fig, ax = ppt.subplots(figsize=(5.3, 3))
+ax.plot(x, c_np[0]+c_np[1]*x+c_np[2]*(x**2), label='approx', color = 'red')  
+ax.plot(x, x**2, label='function', color = 'blue')
+ax.set_title("Approximation by 'numpy'") 
+ax.legend() 
+ppt.show()
+
+#Kramer
+matrix1 = [[0]*3 for i in range(3)]
+for i in range(3):
+    for j in range(3):
+        if (j == 0):
+            matrix1[i][j] = K[i]
+        else:
+            matrix1[i][j] = m[i+j]
+
+matrix2 = [[0]*3 for i in range(3)]
+for i in range(3):
+    for j in range(3):
+        if (j == 1):
+            matrix2[i][j] = K[i]
+        else:
+            matrix2[i][j] = m[i+j]
+
+matrix3 = [[0]*3 for i in range(3)]
+for i in range(3):
+    for j in range(3):
+        if (j == 2):
+            matrix3[i][j] = K[i]
+        else:
+            matrix3[i][j] = m[i+j]
+
+det0 = np.linalg.det(matrix)
+det1 = np.linalg.det(matrix1)
+det2 = np.linalg.det(matrix2)
+det3 = np.linalg.det(matrix3)
+c_kram = np.zeros(3)
+c_kram[0] = det1/det0
+c_kram[1] = det2/det0
+c_kram[2] = det3/det0
+
+S = 0
+for i in range(20):
+    S += (c_kram[0] + c_kram[1]*x[i] + c_kram[2]*(x[i]**2) - x[i]**2)
+eps_kram = S/21
+eps_max_kram = np.sqrt(eps_kram)
+print("kramer eps_max = ", eps_max_kram)
+
+fig, ax = ppt.subplots(figsize=(5.3, 3))
+ax.plot(x, c_kram[0]+c_kram[1]*x+c_kram[2]*(x**2), label='approx', color = 'red')  
+ax.plot(x, x**2, label='function', color = 'blue')
+ax.set_title("Approximation by 'kramer'") 
+ax.legend() 
+ppt.show()
+
+#squares
+s = [[0]*3 for i in range(3)]
+s[0][0] = 1
+s[0][1] = m[1]
+s[0][2] = m[2]
+s[1][1] = np.sqrt(m[2] - m[1]**2)
+s[1][2] = (m[3] - m[1]*m[2])/s[1][1]
+s[2][2] = np.sqrt(m[4] - (s[0][2]**2 + s[1][2]**2))
+z = np.zeros(3)
+z[0] = K[0]
+z[1] = (K[1] - m[1]*K[0])/s[1][1]
+z[2] = (K[2] - (s[0][2]*z[0] + s[1][2]*z[1]))/s[2][2]
+c_squares = np.zeros(3)
+c_squares[2] = z[2]/s[2][2]
+c_squares[1] = (z[1] - s[1][2]*c_squares[2])/s[1][1]
+c_squares[0] = z[0] - (s[0][1]*c_squares[1] + s[0][2]*c_squares[2])
+
+S = 0
+for i in range(20):
+    S += (c_squares[0] + c_squares[1]*x[i] + c_squares[2]*(x[i]**2) - x[i]**2)
+eps_squares = S/21
+eps_max_squares = np.sqrt(eps_squares)
+print("squares eps_max = ", eps_max_squares)
+
+fig, ax = ppt.subplots(figsize=(5.3, 3))
+ax.plot(x, c_squares[0]+c_squares[1]*x+c_squares[2]*(x**2), label='approx', color = 'red')  
+ax.plot(x, x**2, label='function', color = 'blue')
+ax.set_title("Approximation by 'squares'") 
+ax.legend() 
+ppt.show()
